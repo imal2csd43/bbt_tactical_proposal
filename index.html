@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBT Tactical — Project Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2433;
+    --accent: #f0a500;
+    --accent2: #e05c1a;
+    --text: #e8ecf4;
+    --muted: #7a8399;
+    --green: #2ecc8a;
+    --red: #e05c5c;
+    --blue: #4a9eff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 64px 32px 48px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 0%, rgba(240,165,0,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 10% 100%, rgba(74,158,255,0.05) 0%, transparent 60%);
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(240,165,0,0.1);
+    border: 1px solid rgba(240,165,0,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero-tag::before { content: '◈'; font-size: 10px; }
+
+  h1 {
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  h1 span {
+    color: var(--accent);
+    position: relative;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 480px;
+    margin-bottom: 32px;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* SECTION */
+  section {
+    padding: 40px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(240,165,0,0.08);
+    border: 1px solid rgba(240,165,0,0.2);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  /* PROBLEM CARDS */
+  .problem-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+
+  .problem-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .problem-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .problem-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* PHASE CARDS */
+  .phase-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.25s;
+  }
+
+  .phase-card:hover { border-color: rgba(240,165,0,0.3); }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--accent);
+    color: #000;
+    padding: 3px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .phase-badge.p2 { background: var(--blue); }
+  .phase-badge.p3 { background: var(--green); }
+
+  .phase-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .phase-time {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .phase-body {
+    padding: 16px 20px;
+  }
+
+  .task-list {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+
+  .task-item {
+    display: flex;
+    gap: 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .task-check {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .task-check::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* TECH STACK */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .tech-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tech-icon { font-size: 18px; }
+
+  .tech-name {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .tech-role {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .tech-cost {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    margin-top: 4px;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* COST TABLE */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .cost-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cost-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(30,36,51,0.5);
+    vertical-align: top;
+  }
+
+  .cost-table tr:last-child td { border-bottom: none; }
+
+  .cost-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .cost-free {
+    color: var(--green);
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+
+  .cost-paid {
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+
+  .cost-total-row td {
+    background: rgba(240,165,0,0.06);
+    border-top: 1px solid rgba(240,165,0,0.2) !important;
+    font-weight: 700;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--blue), var(--green));
+  }
+
+  .tl-item {
+    position: relative;
+    padding: 0 0 24px 20px;
+  }
+
+  .tl-item:last-child { padding-bottom: 0; }
+
+  .tl-dot {
+    position: absolute;
+    left: -20px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+  }
+
+  .tl-item:nth-child(2) .tl-dot { border-color: var(--blue); }
+  .tl-item:nth-child(3) .tl-dot { border-color: var(--green); }
+
+  .tl-week {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .tl-item:nth-child(2) .tl-week { color: var(--blue); }
+  .tl-item:nth-child(3) .tl-week { color: var(--green); }
+
+  .tl-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .tl-desc {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* DELIVERABLE */
+  .deliver-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .deliver-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .deliver-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(240,165,0,0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .deliver-text { font-size: 13.5px; }
+
+  .deliver-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* WARNING BOX */
+  .warning-box {
+    background: rgba(224,92,26,0.07);
+    border: 1px solid rgba(224,92,26,0.25);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 24px;
+  }
+
+  .warning-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .warning-list {
+    font-size: 13px;
+    color: var(--muted);
+    display: grid;
+    gap: 6px;
+    list-style: none;
+  }
+
+  .warning-list li::before {
+    content: '→ ';
+    color: var(--accent2);
+  }
+
+  /* SUCCESS BOX */
+  .success-box {
+    background: rgba(46,204,138,0.06);
+    border: 1px solid rgba(46,204,138,0.2);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 16px;
+  }
+
+  .success-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .success-list {
+    font-size: 13px;
+    color: var(--muted);
+    display: grid;
+    gap: 6px;
+    list-style: none;
+  }
+
+  .success-list li::before {
+    content: '✓ ';
+    color: var(--green);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 32px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .footer-sub {
+    font-size: 12px;
+    color: rgba(122,131,153,0.5);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 24px 0;
+  }
+
+  /* Animate in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero, section {
+    animation: fadeUp 0.5s ease both;
+  }
+
+  section:nth-child(2) { animation-delay: 0.05s; }
+  section:nth-child(3) { animation-delay: 0.1s; }
+  section:nth-child(4) { animation-delay: 0.15s; }
+  section:nth-child(5) { animation-delay: 0.2s; }
+  section:nth-child(6) { animation-delay: 0.25s; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Project Proposal · BBT Tactical</div>
+  <h1>ระบบ <span>POS</span> &amp; สต็อกกลาง<br>สำหรับ BBT Tactical</h1>
+  <p class="hero-sub">แผนงานพัฒนาระบบจัดการสินค้าและสต็อกแบบรวมศูนย์ สำหรับการขายทั้งหน้าร้านและ Marketplace ออนไลน์</p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">เสนอโดย</span>
+      <span class="meta-value">มาร์ค (Dev)</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">ระยะเวลาโครงการ</span>
+      <span class="meta-value">4–6 สัปดาห์</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">ค่าใช้จ่ายรายเดือน</span>
+      <span class="meta-value" style="color:var(--green)">~฿0–300/เดือน</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">วันที่</span>
+      <span class="meta-value">มีนาคม 2025</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: ปัญหาที่เจอตอนนี้ -->
+<section>
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>ปัญหาที่เจออยู่ตอนนี้</h2>
+  </div>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="problem-icon">📦</div>
+      <div>
+        <div class="problem-title">สต็อกไม่ซิงค์กัน</div>
+        <div class="problem-desc">ขายหน้าร้าน + Lazada + Shopee + TikTok + LINE Shop แยกกัน ต้องมานั่งอัปเดตสต็อกทีละแพลตฟอร์มด้วยมือ เสี่ยงสินค้าหมดแต่ยังขายได้</div>
+      </div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">🔁</div>
+      <div>
+        <div class="problem-title">งานซ้ำซากกินเวลา</div>
+        <div class="problem-desc">อัปโหลดสินค้าซ้ำทุก marketplace ใช้เวลาและแรงงานมาก ทั้งที่ข้อมูลชุดเดียวกัน ควรทำครั้งเดียวแล้วกระจายได้เลย</div>
+      </div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">📊</div>
+      <div>
+        <div class="problem-title">ไม่มีภาพรวมของธุรกิจ</div>
+        <div class="problem-desc">ไม่รู้ว่าสินค้าไหนขายดี แพลตฟอร์มไหนทำเงิน สต็อกเหลือเท่าไหร่จริงๆ ต้องไปดูหลายที่</div>
+      </div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">🏪</div>
+      <div>
+        <div class="problem-title">ไม่มีระบบ POS หน้าร้าน</div>
+        <div class="problem-desc">การขายหน้าร้านยังไม่ได้เชื่อมกับระบบออนไลน์ ทำให้ยอดขายและสต็อกหน้าร้านแยกออกจากกัน</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: เป้าหมายและสิ่งที่จะได้รับ -->
+<section>
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>เป้าหมายและสิ่งที่จะได้รับ</h2>
+  </div>
+  <div class="deliver-grid">
+    <div class="deliver-item">
+      <span class="deliver-num">D1</span>
+      <div>
+        <div class="deliver-text">ฐานข้อมูลสินค้า BBT Tactical พร้อม SKU กลาง + QR Code ครบทุกชิ้น</div>
+        <div class="deliver-sub">ดึงจาก bbttactical.com แล้วจัดระเบียบให้ใช้งานได้ทันที</div>
+      </div>
+    </div>
+    <div class="deliver-item">
+      <span class="deliver-num">D2</span>
+      <div>
+        <div class="deliver-text">เว็บแอปจัดการสต็อกกลาง ที่ตัดสต็อกอัตโนมัติทุก channel</div>
+        <div class="deliver-sub">หน้าร้านยิงบาร์โค้ด → สต็อกลด / ออเดอร์ Lazada เข้า → สต็อกลดพร้อมกัน</div>
+      </div>
+    </div>
+    <div class="deliver-item">
+      <span class="deliver-num">D3</span>
+      <div>
+        <div class="deliver-text">ระบบ POS อย่างง่ายสำหรับหน้าร้าน ใช้งานผ่านเบราว์เซอร์ได้เลย</div>
+        <div class="deliver-sub">ไม่ต้องติดตั้งโปรแกรม เปิดบนแท็บเล็ตหรือคอมก็ได้</div>
+      </div>
+    </div>
+    <div class="deliver-item">
+      <span class="deliver-num">D4</span>
+      <div>
+        <div class="deliver-text">ระบบสร้างไฟล์ CSV/Excel มาตรฐาน สำหรับ upload ขึ้น Lazada, Shopee, TikTok, LINE Shop</div>
+        <div class="deliver-sub">กรอกข้อมูลครั้งเดียว ระบบสร้างไฟล์ให้ทุก marketplace อัตโนมัติ</div>
+      </div>
+    </div>
+    <div class="deliver-item">
+      <span class="deliver-num">D5</span>
+      <div>
+        <div class="deliver-text">Dashboard ภาพรวมธุรกิจ — สต็อก, ยอดขาย, สินค้าใกล้หมด</div>
+        <div class="deliver-sub">ดูได้ในหน้าเดียว ไม่ต้องเปิดหลายแอป</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: แผนงาน 3 Phase -->
+<section>
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>แผนงาน 3 ระยะ</h2>
+  </div>
+  <div class="phase-list">
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge">PHASE 1</span>
+        <span class="phase-title">รากฐาน — ข้อมูลสินค้า &amp; SKU</span>
+        <span class="phase-time">สัปดาห์ที่ 1–2</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item"><span class="task-check"></span>ดึงข้อมูลสินค้าทั้งหมดจาก bbttactical.com (ชื่อ, ราคา, หมวดหมู่, รูปภาพ)</li>
+          <li class="task-item"><span class="task-check"></span>ทำความสะอาดข้อมูลและจัดหมวดหมู่ให้เป็นระเบียบ</li>
+          <li class="task-item"><span class="task-check"></span>สร้างระบบ SKU กลาง ที่ไม่ซ้ำกันทุกชิ้น</li>
+          <li class="task-item"><span class="task-check"></span>Generate QR Code สำหรับแต่ละ SKU พร้อม print</li>
+          <li class="task-item"><span class="task-check"></span>บันทึกลงฐานข้อมูล (Google Sheets หรือ Supabase)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge p2">PHASE 2</span>
+        <span class="phase-title">ระบบสต็อกกลาง &amp; POS</span>
+        <span class="phase-time">สัปดาห์ที่ 2–4</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item"><span class="task-check"></span>สร้างเว็บแอปจัดการสต็อก (เพิ่ม/ลด/เช็คสต็อก)</li>
+          <li class="task-item"><span class="task-check"></span>ระบบ POS หน้าร้าน — สแกนบาร์โค้ด/QR → ตัดสต็อกทันที</li>
+          <li class="task-item"><span class="task-check"></span>เชื่อมสต็อกกับ Lazada/Shopee ผ่าน API หรือการอัปเดตกึ่งอัตโนมัติ</li>
+          <li class="task-item"><span class="task-check"></span>แจ้งเตือนเมื่อสต็อกสินค้าใกล้หมด</li>
+          <li class="task-item"><span class="task-check"></span>ออกใบเสร็จอย่างง่ายสำหรับหน้าร้าน</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge p3">PHASE 3</span>
+        <span class="phase-title">Marketplace Export &amp; Dashboard</span>
+        <span class="phase-time">สัปดาห์ที่ 4–6</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item"><span class="task-check"></span>ระบบสร้างไฟล์ CSV มาตรฐานสำหรับ Lazada, Shopee, TikTok Shop, LINE Shop</li>
+          <li class="task-item"><span class="task-check"></span>กรอกข้อมูลครั้งเดียว → Export ได้ทุก marketplace</li>
+          <li class="task-item"><span class="task-check"></span>Dashboard สรุปภาพรวม: สต็อก, ยอดขาย, สินค้าขายดี</li>
+          <li class="task-item"><span class="task-check"></span>ทดสอบระบบทั้งหมดกับข้อมูลจริง</li>
+          <li class="task-item"><span class="task-check"></span>ส่งมอบพร้อมคู่มือการใช้งาน</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 4: เทคโนโลยีที่จะใช้ -->
+<section>
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>เทคโนโลยีที่จะใช้ (ประหยัดค่าใช้จ่าย)</h2>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-chip">
+      <span class="tech-icon">🐍</span>
+      <span class="tech-name">Python</span>
+      <span class="tech-role">ดึงข้อมูล / Script</span>
+      <span class="tech-cost">ฟรี</span>
+    </div>
+    <div class="tech-chip">
+      <span class="tech-icon">🌐</span>
+      <span class="tech-name">Next.js / React</span>
+      <span class="tech-role">เว็บแอป / POS</span>
+      <span class="tech-cost">ฟรี</span>
+    </div>
+    <div class="tech-chip">
+      <span class="tech-icon">🗄️</span>
+      <span class="tech-name">Supabase</span>
+      <span class="tech-role">ฐานข้อมูล</span>
+      <span class="tech-cost">ฟรี (Free Tier)</span>
+    </div>
+    <div class="tech-chip">
+      <span class="tech-icon">☁️</span>
+      <span class="tech-name">Vercel</span>
+      <span class="tech-role">Host เว็บแอป</span>
+      <span class="tech-cost">ฟรี</span>
+    </div>
+    <div class="tech-chip">
+      <span class="tech-icon">📊</span>
+      <span class="tech-name">Google Sheets</span>
+      <span class="tech-role">Backup / Export</span>
+      <span class="tech-cost">ฟรี</span>
+    </div>
+    <div class="tech-chip">
+      <span class="tech-icon">🔗</span>
+      <span class="tech-name">n8n / Make</span>
+      <span class="tech-role">Automation</span>
+      <span class="tech-cost">~฿300/เดือน</span>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <div class="warning-title">⚠️ ข้อจำกัดที่ต้องรู้</div>
+    <ul class="warning-list">
+      <li>การดึงข้อมูลจาก bbttactical.com ต้องทำจาก public data เท่านั้น ไม่เข้า login หลังบ้าน</li>
+      <li>การเชื่อม Lazada/Shopee API แบบ full-auto ต้องสมัคร seller API ซึ่งอาจใช้เวลา approve</li>
+      <li>ช่วงแรกอาจต้องอัปเดตสต็อก marketplace แบบ semi-auto (ระบบช่วยคำนวณ แต่คนกด confirm)</li>
+    </ul>
+  </div>
+
+  <div class="success-box">
+    <div class="success-title">✅ สิ่งที่ระบบนี้จะช่วยได้แน่นอน</div>
+    <ul class="success-list">
+      <li>ลดเวลางานซ้ำซากลงได้ 60–80%</li>
+      <li>ไม่มีสต็อกติดลบ เพราะตัดจากกลางเดียว</li>
+      <li>upload สินค้าใหม่ขึ้น 4 marketplace ใน 5 นาที แทนที่จะเป็น 2 ชั่วโมง</li>
+      <li>พี่สาวมีเวลาให้ครอบครัวและชีวิตส่วนตัวมากขึ้น</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SECTION 5: Timeline -->
+<section>
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Timeline โดยรวม</h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-week">สัปดาห์ที่ 1–2</div>
+      <div class="tl-title">Phase 1 — ฐานข้อมูลสินค้า</div>
+      <div class="tl-desc">ดึงข้อมูลจากเว็บ → จัด SKU กลาง → Gen QR Code → มีฐานข้อมูลสินค้าที่ใช้งานได้จริง พร้อมนำเสนอ</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-week">สัปดาห์ที่ 2–4</div>
+      <div class="tl-title">Phase 2 — ระบบสต็อก &amp; POS</div>
+      <div class="tl-desc">เว็บแอปจัดการสต็อก + POS หน้าร้านใช้งานได้จริง ทดสอบร่วมกับพี่สาว ปรับตามที่ต้องการ</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-week">สัปดาห์ที่ 4–6</div>
+      <div class="tl-title">Phase 3 — Marketplace &amp; Dashboard</div>
+      <div class="tl-desc">Export ไฟล์ marketplace + Dashboard + ส่งมอบระบบ ครบทุก deliverable</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: Mobile Scan POS -->
+<section>
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>ระบบสแกน QR ผ่านมือถือ — สำหรับพนักงานหน้าร้าน</h2>
+  </div>
+
+  <p style="font-size:13.5px; color:var(--muted); margin-bottom:24px; max-width:560px;">
+    พนักงานไม่ต้องใช้คอมพิวเตอร์ — ใช้แค่มือถือสแกน QR สินค้า ระบบจัดการสต็อกกลางให้อัตโนมัติทันที
+  </p>
+
+  <!-- Flow: ขายสินค้า -->
+  <div style="margin-bottom:28px;">
+    <div style="font-family:'Space Mono',monospace; font-size:11px; color:var(--blue); letter-spacing:1px; text-transform:uppercase; margin-bottom:14px;">
+      📱 Flow 1 — ขายสินค้า (ตัดสต็อก)
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">
+        <div class="flow-icon">📷</div>
+        <div class="flow-label">พนักงานเปิด<br>เว็บแอปบนมือถือ</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🔍</div>
+        <div class="flow-label">สแกน QR Code<br>บนสินค้า</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">✅</div>
+        <div class="flow-label">กด "ขายแล้ว"<br>ระบุจำนวน</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step highlight-step">
+        <div class="flow-icon">📉</div>
+        <div class="flow-label">สต็อกกลาง<br>ลดทันที</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flow: คืนสินค้า / Void -->
+  <div style="margin-bottom:28px;">
+    <div style="font-family:'Space Mono',monospace; font-size:11px; color:var(--accent2); letter-spacing:1px; text-transform:uppercase; margin-bottom:14px;">
+      🔄 Flow 2 — คืนสินค้า / Void (เพิ่มสต็อกกลับ)
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">
+        <div class="flow-icon">📷</div>
+        <div class="flow-label">พนักงานเปิด<br>เว็บแอปบนมือถือ</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🔍</div>
+        <div class="flow-label">สแกน QR Code<br>บนสินค้าที่คืน</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">↩️</div>
+        <div class="flow-label">กด "คืนสินค้า"<br>ระบุเหตุผล</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step highlight-step-green">
+        <div class="flow-icon">📈</div>
+        <div class="flow-label">สต็อกกลาง<br>เพิ่มกลับทันที</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📵</div>
+      <div class="feature-title">ไม่ต้องติดตั้งแอป</div>
+      <div class="feature-desc">เปิดผ่านเบราว์เซอร์มือถือได้เลย ทั้ง iOS และ Android</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">👥</div>
+      <div class="feature-title">รองรับหลายพนักงาน</div>
+      <div class="feature-desc">แต่ละคน login ด้วย PIN ระบบบันทึกว่าใครทำรายการ</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <div class="feature-title">ประวัติทุกรายการ</div>
+      <div class="feature-desc">ดูได้ว่าใครขายอะไร เมื่อไหร่ และ void โดยใคร</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <div class="feature-title">แจ้งเตือนสต็อกต่ำ</div>
+      <div class="feature-desc">เมื่อสินค้าเหลือน้อยกว่าที่กำหนด ระบบแจ้งเตือนทันที</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BBT TACTICAL × PROJECT PROPOSAL</div>
+  <div class="footer-sub">จัดทำโดย มาร์ค · มีนาคม 2025</div>
+</footer>
+
+<style>
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+    min-width: 90px;
+    flex: 1;
+  }
+
+  .highlight-step {
+    border-color: rgba(74,158,255,0.4);
+    background: rgba(74,158,255,0.06);
+  }
+
+  .highlight-step-green {
+    border-color: rgba(46,204,138,0.4);
+    background: rgba(46,204,138,0.06);
+  }
+
+  .flow-icon { font-size: 20px; margin-bottom: 6px; }
+
+  .flow-label {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .flow-arrow {
+    color: var(--border);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+
+  .feature-icon { font-size: 20px; margin-bottom: 8px; }
+
+  .feature-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .feature-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+</style>
+
+</body>
+</html>
